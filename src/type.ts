@@ -42,11 +42,14 @@ export type FiberMap<P> = Record<string, IFiber<P>>
 
 export interface IFiber<P extends Attributes = any> {
   key?: string
+  /** 是否放入更新队列 */
   dirty?: boolean | number
   tag: number
+  /** @types{string | FC<P>} 字符串表示标签名，函数是组件 */
   type: string | FC<P>
   op: number
   parentNode: HTMLElementEx
+  /** 真实的 node 节点 */
   node: HTMLElementEx
   kids?: FiberMap<P>
   parent?: IFiber<P>
@@ -64,7 +67,11 @@ export interface IFiber<P extends Attributes = any> {
   promises?: Promise<Function>[]
 }
 
-export type HTMLElementEx = HTMLElement & { last: IFiber | null }
+/** @types {HTMLElement & { last: IFiber | null }} HTMLElement的扩展定义，添加了 last: IFiber 属性*/
+export type HTMLElementEx = HTMLElement & {
+  /** 最后一个子 Fiber */
+  last: IFiber | null }
+
 export type IEffect = [Function?, number?, Function?]
 
 export type FreText = string | number
@@ -93,6 +100,7 @@ export type ITaskCallback =
 
 export interface ITask {
   callback?: ITaskCallback
+  /** 任务截至时间 */
   dueTime: number
 }
 

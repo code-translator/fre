@@ -22,6 +22,7 @@ export const options: Option = {
 }
 
 let preCommit: IFiber | undefined
+/** 全局 Fiber 变量 */
 let currentFiber: IFiber
 let WIP: IFiber | undefined
 let updateQueue: IFiber[] = []
@@ -40,6 +41,11 @@ export const render = (
   scheduleWork(rootFiber)
 }
 
+/**
+ * 从指定的 fiber 开始调度.
+ * 
+ * 如果 fiber.dirty == false 表示没有放入更新队列
+ */
 export const scheduleWork = (fiber: IFiber) => {
   if (!fiber.dirty) {
     fiber.dirty = true
@@ -60,6 +66,10 @@ const reconcileWork = (timeout: boolean): boolean | null | ITaskCallback => {
   return null
 }
 
+/**
+ * 更新 IFiber，函数组件更新 hook
+ * @param WIP 
+ */
 const reconcile = (WIP: IFiber): IFiber | undefined => {
   WIP.parentNode = getParentNode(WIP) as HTMLElementEx
   if (isFn(WIP.type)) {
@@ -109,12 +119,18 @@ const updateHost = (WIP: IFiber): void => {
   reconcileChildren(WIP, WIP.props.children)
 }
 
+/**
+ * 找到 WIP 的真实父元素
+ */
 const getParentNode = (WIP: IFiber): HTMLElement | undefined => {
   while ((WIP = WIP.parent)) {
     if (!isFn(WIP.type)) return WIP.node
   }
 }
 
+/**
+ * 根据新旧 children Fiber 更新 IFiber.op
+ */
 const reconcileChildren = (WIP: IFiber, children: FreNode): void => {
   delete WIP.child
   const oldFibers = WIP.kids
