@@ -68,7 +68,7 @@ test('ignore `true`, `false`, `null` and `undefined` JSX literals', () => {
   })
 })
 
-test('emit JSX string/number literals', () => {
+test('merge simple nodes', () => {
   const div = <div>{"hello"}{""}{123}</div>
 
   expect(div).toStrictEqual({
@@ -76,11 +76,20 @@ test('emit JSX string/number literals', () => {
     key: null,
     ref: null,
     props: {
-      children: [
-        { type: "text", props: { nodeValue: "hello" } },
-        { type: "text", props: { nodeValue: "" } },
-        { type: "text", props: { nodeValue: 123 } },
-      ]
+      children: { type: "text", props: { nodeValue: "hello123" } },
+    }
+  })
+})
+
+test('ignore nodes mixins simple nodes', () => {
+  const div = <div>{"hello"}{true}{false}{""}{null}{undefined}{123}</div>
+
+  expect(div).toStrictEqual({
+    type: "div",
+    key: null,
+    ref: null,
+    props: {
+      children: { type: "text", props: { nodeValue: "hello123" } },
     }
   })
 })
